@@ -1,6 +1,9 @@
 package com.example.urlshortener.model;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;  
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +29,19 @@ import jakarta.persistence.Lob;
   * By convention, Hibernate will create a table named after the class in snake_case,
   * so this entity will be mapped to a table named 'url_mapping'.
   */
+
+ /**
+ * The @Getter and @Setter annotations from Lombok automatically generate
+ * the getter and setter methods for all fields in this class at compile time.
+ * For example, Lombok will create getId(), setOriginalUrl(String url), etc.
+ *
+ * The @NoArgsConstructor annotation generates a no-argument constructor. This is
+ * often required by persistence frameworks like JPA/Hibernate to instantiate the
+ * entity when fetching it from the database.
+ */
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity // <-- THIS IS THE NEW ANNOTATION
 public class UrlMapping {
 // --- NEWLY ADDED FIELDS START HERE ---
@@ -67,6 +83,7 @@ public class UrlMapping {
      *       against errors caused by exceptionally long URLs.
      */
     @Lob // <-- THIS IS THE NEW ANNOTATION
+    @Column(nullable = false) // Good practice: the original URL should not be null
     private String originalUrl;
 
     /**
