@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 /**
  * This class represents the core business logic layer for our URL shortener.
+ * 
+ * INDEED, IT IS STILL A SHELL CLASS!
  *
  * The @Service annotation marks this class as a Spring service component.
  * It's a specialized form of the @Component annotation, used to indicate that
