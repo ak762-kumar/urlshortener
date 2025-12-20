@@ -11,13 +11,16 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 // NEW: Import the necessary HTTP and web-related classes
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/url")
+//@RequestMapping("/api/v1/url")
 public class UrlController {
 
     private final UrlShortenerService urlShortenerService;
@@ -28,7 +31,7 @@ public class UrlController {
 
     // This is the method we created in the previous task.
     // Now we will add the parameters to its signature.
-    @PostMapping("/shorten")
+    @PostMapping("/api/v1/url/shorten")
     public ResponseEntity<ShortenUrlResponse> shortenUrl(@Valid @RequestBody ShortenUrlRequest request) {
         
         // Step 1: Delegate to the service to get the unique code.
@@ -51,5 +54,28 @@ public class UrlController {
         // - .body(response): Sets our response DTO as the body of the HTTP response. Spring will
         //   automatically serialize this Java object into a JSON string.
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * This method handles the redirection from a short URL to the original URL.
+     *
+     * @GetMapping("/{shortCode}"): This annotation maps HTTP GET requests to this method.
+     * The path "/{shortCode}" contains a path variable. This means it will match any GET
+     * request to the root path followed by some value, e.g., /aB1cDe, /xYz123.
+     *
+     * @PathVariable String shortCode: This annotation tells Spring to take the value from the
+     * {shortCode} placeholder in the URL and inject it into the 'shortCode' method parameter.
+     * For a request to /aB1cDe, the value of the 'shortCode' parameter will be "aB1cDe".
+     *
+     * @return A ResponseEntity<Void>. For a redirect, we don't send a body, so the generic type
+     * is Void. The entire response is communicated through the HTTP status code (302 Found)
+     * and the 'Location' header, which we will implement in a later task.
+     */
+    @GetMapping("/{shortCode}")
+    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
+        // For now, this method is a placeholder. In the upcoming tasks, we will add the
+        // logic to call the service, find the original URL, and build the
+        // redirect response.
+        return null; 
     }
 }

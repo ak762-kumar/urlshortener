@@ -2,6 +2,7 @@
 package com.example.urlshortener.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 // NEW: We must import the @Service annotation. This makes it available to our class.
 // The 'stereotype' package contains annotations that define the roles of beans.
@@ -115,6 +116,33 @@ public class UrlShortenerService {
         // 6. Fulfill the method's contract by returning the generated short code.
         // This value is what the caller (e.g., our future API controller) will receive and use to construct the final, shareable short URL for the user.
         return shortCode;
+    }
+
+    /**
+     * Finds the original URL for a given short code and increments its click count.
+     * This method encapsulates the core logic for the redirection feature.
+     *
+     * @param shortCode The unique code representing the shortened URL.
+     * @return The original, long URL to redirect to.
+     * @throws // In a later step, this will throw a custom UrlNotFoundException if
+     */
+    public String getOriginalUrlAndIncrementClicks(String shortCode) {
+        // Here, we use the custom query method we defined in our repository.
+        // Spring Data JPA implements this method for us based on its name.
+        // It executes a query to find a UrlMapping entity where the 'shortCode' column
+        // matches the value passed to the method.
+        // The result is wrapped in an Optional, which is a container that may or may
+        // not
+        // hold a value. This is a robust way to handle cases where the short code might
+        // not exist.
+        Optional<UrlMapping> urlMappingOptional = urlMappingRepository.findByShortCode(shortCode);
+
+        // In the next tasks, we will check if urlMappingOptional contains a value.
+        // If it does, we'll get the UrlMapping object, increment its click count,
+        // save it, and return the original URL.
+        // If it's empty, we will throw an exception to signal that the URL was not
+        // found.
+        return null;
     }
 
     /**
