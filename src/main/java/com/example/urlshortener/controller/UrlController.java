@@ -73,9 +73,11 @@ public class UrlController {
      */
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
-        // For now, this method is a placeholder. In the upcoming tasks, we will add the
-        // logic to call the service, find the original URL, and build the
-        // redirect response.
-        return null; 
+        // The controller's job is to delegate the business logic to the service layer.
+        // We pass the shortCode captured from the URL path to our new service method.
+        String originalUrl = urlShortenerService.getOriginalUrlAndIncrementClicks(shortCode);
+
+        
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
     }
 }
