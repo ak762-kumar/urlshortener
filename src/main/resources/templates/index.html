@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Simple URL Shortener</title>
+</head>
+
+<body>
+
+  <h1>Welcome to the URL Shortener!</h1>
+
+  <!-- 
+      The <form> tag is the container for our user input fields.
+      In the next task, we will add 'action' and 'method' attributes to tell
+      the browser where and how to send this form's data.
+    -->
+      <!--
+    th:action="@{/shorten-web}": This is a Thymeleaf attribute that tells the browser
+      where to send the form data. The @{...} syntax creates a context-relative URL,
+      which is a best practice for portability. We are targeting an endpoint at /shorten-web,
+      which we will create in our PageController next.
+      
+      method="POST": This specifies that the form should be submitted using the HTTP POST
+      method. This is the correct method for sending data to a server to create a new resource,(in our case, a new URL Mapping).
+    -->
+      <form th:action="@{/shorten-web}" method="POST">
+
+  <form>
+    <div>
+      <!-- 
+              The <label> provides a description for the input field.
+              The 'for' attribute links this label to the input element with a
+              matching 'id', which is important for accessibility.
+            -->
+      <label for="longUrl">Enter a long URL to shorten:</label>
+    </div>
+    <div>
+      <!-- 
+              This is the main input field for the user.
+              - type="text": Specifies a single-line text input.
+              - id="longUrl": A unique identifier, used by the <label>.
+              - name="longUrl": This is CRITICAL. The 'name' attribute provides the key
+                that will be sent to the server. When this form is submitted, the data
+                will be sent as a key-value pair, like 'longUrl=...'.
+              - size="50": Suggests a visible width of 50 characters for the input field.
+              - placeholder: Provides a helpful hint to the user.
+            -->
+      <input type="text" id="longUrl" name="longUrl" size="50" placeholder="https://example.com/very/long/url" required>
+    </div>
+    <div>
+      <!--
+              The <input type="submit"> creates a button that, when clicked,
+              submits the form data to the server. The 'value' attribute
+              determines the text displayed on the button.
+            -->
+      <input type="submit" value="Shorten URL">
+    </div>
+  </form>
+
+  <!-- 
+        This entire <div> block will only be rendered IF the 'shortUrlResult' variable exists in the Model.
+        th:if="${shortUrlResult != null}" is a Thymeleaf condition.
+        On the initial page load, 'shortUrlResult' is null, so this whole block is hidden.
+        After a successful form submission, the controller adds 'shortUrlResult' to the model,
+        the condition becomes true, and this block is displayed.
+      -->
+  <div class="result" th:if="${shortUrlResult != null}">
+    <h2>Success! Here is your short URL:</h2>
+  
+    <p>
+      Original URL:
+      <!--
+                th:text replaces the content of this <span> with the value of the 'originalUrl' variable from the Model.
+                We use a <span> to avoid breaking the text flow.
+              -->
+      <span th:text="${originalUrl}">https://example.com/original-url-goes-here</span>
+    </p>
+  
+    <p>
+      Short URL:
+      <!--
+                This is a powerful combination of Thymeleaf attributes on an anchor (<a>) tag.
+                - th:href sets the 'href' attribute, making the link clickable. It uses the value from 'shortUrlResult'.
+                - th:text sets the visible text of the link, also using 'shortUrlResult'.
+                - target="_blank" is a standard HTML attribute to open the link in a new tab.
+              -->
+      <a th:href="${shortUrlResult}" th:text="${shortUrlResult}"
+        target="_blank">http://localhost:8080/short-url-goes-here</a>
+    </p>
+  </div>
+
+</body>
+
+</html>

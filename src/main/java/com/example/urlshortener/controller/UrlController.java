@@ -77,7 +77,8 @@ public class UrlController {
         // We pass the shortCode captured from the URL path to our new service method.
         String originalUrl = urlShortenerService.getOriginalUrlAndIncrementClicks(shortCode);
 
-        
+
+
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
     }
 }
