@@ -8,6 +8,7 @@ import java.util.Optional;
 // The 'stereotype' package contains annotations that define the roles of beans.
 import org.springframework.stereotype.Service;
 
+import com.example.urlshortener.dto.UrlStatsResponse;
 import com.example.urlshortener.exception.UrlNotFoundException;
 import com.example.urlshortener.model.UrlMapping;
 import com.example.urlshortener.repository.UrlMappingRepository;
@@ -128,6 +129,7 @@ public class UrlShortenerService {
      * @return The original, long URL to redirect to.
      * @throws // In a later step, this will throw a custom UrlNotFoundException if
      */
+    @Transactional
     public String getOriginalUrlAndIncrementClicks(String shortCode) {
         // The .orElseThrow() method is the most elegant way to handle an Optional that
         // is expected to contain a value.
@@ -147,6 +149,35 @@ public class UrlShortenerService {
         return urlMapping.getOriginalUrl();
     }
 
+    /**
+     * Retrieves statistics for a given short code.
+     * This is a read-only operation and doesn't need to be @Transactional by itself,
+     * but adding it is harmless and keeps it consistent with other data-access methods.
+     *
+     * @param shortCode The unique code to look up.
+     * @return A UrlStatsResponse DTO containing the statistics.
+     * @throws UrlNotFoundException if the short code does not exist.
+     */
+    public UrlStatsResponse getStats(String shortCode) {
+        // Step 1: Find the entity. We reuse our repository's custom find method.
+        // Step 2: Validate. We reuse the .orElseThrow() pattern with our existing
+        // custom exception. This ensures our API's error handling is consistent.
+        UrlMapping urlMapping = urlMappingRepository.findByShortCode(shortCode)
+                .orElseThrow(() -> new UrlNotFoundException("No statistics found for short code: " + shortCode));
+
+        // Step 3: Transform (Map) the entity to the DTO.
+        // We construct the full URL here for user convenience, as the DTO contract requires it.
+        String fullShortUrl = "http://localhost:8080/" + urlMapping.getShortCode();
+        
+        // We create a new instance of our immutable UrlStatsResponse record,
+        // populating it with data from the UrlMapping entity we just fetched.
+        return new UrlStatsResponse(
+            urlMapping.getOriginalUrl(),
+            fullShortUrl,
+            urlMapping.getCreationDate(),
+            urlMapping.getClickCount()
+        );
+    }
     /**
      * A private utility method to convert a base-10 number (our database ID)
      * into a base-62 string.

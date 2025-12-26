@@ -4,6 +4,69 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple URL Shortener</title>
+<style>
+  body {
+    font-family: sans-serif;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  h1,
+  h2 {
+    color: #333;
+  }
+
+  form div {
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  input[type="submit"] {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9f7ef;
+    border: 1px solid #b7e4c7;
+    border-radius: 4px;
+  }
+
+  .result p {
+    margin: 5px 0;
+  }
+
+  .result a {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .result a:hover {
+    text-decoration: underline;
+  }
+
+  hr {
+    border: 0;
+    height: 1px;
+    background-color: #ccc;
+    margin: 40px 0;
+  }
+</style>
 </head>
 
 <body>
@@ -89,6 +152,90 @@
         target="_blank">http://localhost:8080/short-url-goes-here</a>
     </p>
   </div>
+  <!--
+        The <hr> tag creates a horizontal rule, providing a clear visual separation
+        between the URL shortening functionality above and the new statistics
+        functionality we are about to build below.
+      -->
+  <hr>
+  
+  <!--
+        The <h2> heading clearly labels this new section of our page. This helps
+        the user immediately understand the purpose of the form elements that we
+        will add here in the next task.
+      -->
+  <h2>Check Link Statistics</h2>
+
+
+<!-- 
+      This is the new form for our statistics feature. In subsequent tasks, we will add
+      'th:action' and 'method' attributes to connect it to a new backend endpoint.
+    -->
+<form>
+  <div>
+    <!-- The label for our new input field, linked via the 'for' attribute. -->
+    <label for="checkShortCode">Enter a short code to check its stats:</label>
+  </div>
+  <div>
+    <!-- 
+              This is the input field for the short code.
+              - id="checkShortCode": A unique ID, used by the label.
+              - name="checkShortCode": CRITICAL! This is the key our Spring controller will use
+                to retrieve the submitted value from the request.
+              - placeholder: A helpful hint for the user.
+              - required: Prevents submitting an empty form.
+            -->
+    <input type="text" id="checkShortCode" name="checkShortCode" size="20" placeholder="e.g., aB1cDe" required>
+  </div>
+  <div>
+    <!-- The submit button for this form. -->
+    <input type="submit" value="Check Stats">
+  </div>
+</form>
+
+<!-- In a later task, we will add a new results area here to display the stats. -->
+
+<!-- --- NEWLY ADDED FORM END --- -->
+
+<hr>
+
+<h2>Check Link Statistics</h2>
+
+<!-- --- FORM TAG TO BE MODIFIED --- -->
+<!-- 
+      We are now adding the 'th:action' and 'method' attributes to wire up this form.
+      - th:action="@{/check-stats}": Instructs the form to submit its data to the /check-stats
+        endpoint we just created in our PageController.
+      - method="POST": Specifies that the submission should use the HTTP POST method.
+    -->
+<form th:action="@{/check-stats}" method="POST">
+  <!-- --- END OF MODIFICATION --- -->
+  <div>
+    <label for="checkShortCode">Enter a short code to check its stats:</label>
+  </div>
+  <div>
+    <input type="text" id="checkShortCode" name="checkShortCode" size="20" placeholder="e.g., aB1cDe" required>
+  </div>
+  <div>
+    <input type="submit" value="Check Stats">
+  </div>
+</form>
+
+<!-- Case 1: Success. This block is rendered only if the "urlStats" object exists in the model. -->
+<div class="result" th:if="${urlStats != null}">
+  <h3>Statistics</h3>
+  <p><strong>Original URL:</strong> <span th:text="${urlStats.originalUrl}"></span></p>
+  <p><strong>Short URL:</strong> <a th:href="${urlStats.shortUrl}" th:text="${urlStats.shortUrl}" target="_blank"></a>
+  </p>
+  <p><strong>Created On:</strong> <span
+      th:text="${#temporals.format(urlStats.creationDate, 'dd-MMM-yyyy HH:mm')}"></span></p>
+  <p><strong>Total Clicks:</strong> <span th:text="${urlStats.clickCount}"></span></p>
+</div>
+
+<!-- Case 2: Error. This block is rendered only if the "statsError" message exists in the model. -->
+<div class="result" style="background-color: #f8d7da; border-color: #f5c6cb;" th:if="${statsError != null}">
+  <p style="color: #721c24;" th:text="${statsError}"></p>
+</div>
 
 </body>
 
