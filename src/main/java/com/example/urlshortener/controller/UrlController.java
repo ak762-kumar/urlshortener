@@ -35,7 +35,7 @@ public class UrlController {
     public ResponseEntity<ShortenUrlResponse> shortenUrl(@Valid @RequestBody ShortenUrlRequest request) {
         
         // Step 1: Delegate to the service to get the unique code.
-        String shortCode = urlShortenerService.shortenUrl(request.url());
+        String shortCode = urlShortenerService.shortenUrl(request.url(), request.customAlias());
 
         // Step 2: Construct the full, user-facing URL.
         String fullShortUrl = "http://localhost:8080/" + shortCode;

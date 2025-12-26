@@ -84,7 +84,7 @@ public class UrlShortenerService {
 
     // By default, repository methods are transactional. However, our method orchestrates multiple database operations. Wrapping it in @Transactional ensures that these operations are executed as a single, atomic unit. If any part fails, all previous operations in the method are rolled back.
     @Transactional
-    public String shortenUrl(String originalUrl) {
+    public String shortenUrl(String originalUrl, String customAlias) {
         // Step 1: Create a new UrlMapping entity instance. This object will represent the new row we want to save in our database.
         UrlMapping urlMapping = new UrlMapping();
         // Step 2: Set the properties we already know. We set the originalUrl & CreationDate from the method parameter.

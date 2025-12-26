@@ -31,5 +31,5 @@ public record ShortenUrlRequest(
         // The @URL annotation from Hibernate Validator provides a robust check to
         // ensure
         // the string is a validly formatted URL.
-        @URL(message = "A valid URL format is required") String url) {
+        @URL(message = "A valid URL format is required") String url,String CustomAlias) {
 }

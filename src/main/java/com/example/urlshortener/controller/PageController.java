@@ -27,7 +27,7 @@ public class PageController {
 
     @PostMapping("/shorten-web")
     public String handleShortenForm(@RequestParam("longUrl") String longUrl, Model model) {
-        String shortCode = urlShortenerService.shortenUrl(longUrl);
+        String shortCode = urlShortenerService.shortenUrl(longUrl,null);
         String fullShortUrl = "http://localhost:8080/" + shortCode;
         model.addAttribute("originalUrl", longUrl);
         model.addAttribute("shortUrlResult", fullShortUrl);
