@@ -117,6 +117,15 @@ public class UrlMapping {
      * has never been clicked should have a count of 0, not null.
      */
     private long clickCount;
+/**
+     * The timestamp indicating when this short link should expire and no longer be active.
+     * This field is nullable. A 'null' value signifies that the link does not have an expiration date
+     * and should be considered permanent.
+     * 
+     * When the application starts, Spring Data JPA (via Hibernate) will see this new field
+     * and, if your 'spring.jpa.hibernate.ddl-auto' property is set to 'update', it will
+     * automatically add an 'expiration_date' column to your 'url_mapping' database table.
+     */
+    private LocalDateTime expirationDate;
 
-    // --- NEWLY ADDED FIELDS END HERE ---
 }

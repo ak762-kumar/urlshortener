@@ -4,6 +4,7 @@ package com.example.urlshortener.controller;
 
 import com.example.urlshortener.dto.ShortenUrlRequest;
 import com.example.urlshortener.dto.ShortenUrlResponse;
+import com.example.urlshortener.dto.UrlStatsResponse;
 import com.example.urlshortener.service.UrlShortenerService;
 // NEW: Import the @Valid annotation for triggering validation
 import jakarta.validation.Valid;
@@ -35,7 +36,7 @@ public class UrlController {
     public ResponseEntity<ShortenUrlResponse> shortenUrl(@Valid @RequestBody ShortenUrlRequest request) {
         
         // Step 1: Delegate to the service to get the unique code.
-        String shortCode = urlShortenerService.shortenUrl(request.url(), request.customAlias());
+        String shortCode = urlShortenerService.shortenUrl(request.url(), request.CustomAlias());
 
         // Step 2: Construct the full, user-facing URL.
         String fullShortUrl = "http://localhost:8080/" + shortCode;

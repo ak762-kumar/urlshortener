@@ -3,6 +3,7 @@
 package com.example.urlshortener.controller;
 
 import com.example.urlshortener.dto.UrlStatsResponse;
+import com.example.urlshortener.exception.AliasAlreadyExistsException;
 import com.example.urlshortener.exception.UrlNotFoundException;
 import com.example.urlshortener.service.UrlShortenerService;
 import org.springframework.stereotype.Controller;
@@ -26,15 +27,35 @@ public class PageController {
     }
 
     @PostMapping("/shorten-web")
-    public String handleShortenForm(@RequestParam("longUrl") String longUrl, Model model) {
-        String shortCode = urlShortenerService.shortenUrl(longUrl,null);
-        String fullShortUrl = "http://localhost:8080/" + shortCode;
+     public String handleShortenForm(
+            @RequestParam("longUrl") String longUrl,
+            // NEW: Add a parameter for the custom alias.
+            // The `name` must match the input's 'name' attribute in the HTML.
+            // `required = false` tells Spring that this parameter is optional.
+            // If the user doesn't submit a value, 'customAlias' will be null.
+            @RequestParam(name = "customAlias", required = false) String customAlias,
+            Model model
+    ) {
+        // We add the original URL to the model immediately, so the user's input
+        // is preserved on the page even if there's an error.
         model.addAttribute("originalUrl", longUrl);
-        model.addAttribute("shortUrlResult", fullShortUrl);
+
+        try {
+            // UPDATED: Pass both the URL and the (potentially null) alias to the service.
+            String shortCode = urlShortenerService.shortenUrl(longUrl, customAlias);
+            String fullShortUrl = "http://localhost:8080/" + shortCode;
+
+            // Add the successful result to the model.
+            model.addAttribute("shortUrlResult", fullShortUrl);
+
+        } catch (AliasAlreadyExistsException e) {
+            // If the service throws our custom exception, we catch it.
+            // We add a user-friendly error message to the model for Thymeleaf to display.
+            model.addAttribute("aliasError", e.getMessage());
+        }
+        
         return "index";
     }
-
-    // --- NEWLY ADDED METHOD START ---
 
     /**
      * Handles the form submission for checking URL statistics.

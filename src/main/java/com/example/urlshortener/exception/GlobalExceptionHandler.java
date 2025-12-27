@@ -1,8 +1,8 @@
-// src/main/java/com/example/urlshortener/exception/GlobalExceptionHandler.java
+
 
 package com.example.urlshortener.exception;
 
-// NEW: Import necessary classes for the handler
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,7 +16,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // --- NEWLY ADDED METHOD START ---
+
 
     /**
      * This method is a dedicated handler for the UrlNotFoundException.
@@ -39,22 +39,35 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UrlNotFoundException.class)
     public ResponseEntity<Object> handleUrlNotFoundException(UrlNotFoundException ex, WebRequest request) {
-
         // Create a structured, map-based body for our JSON response.
-        // Using a LinkedHashMap preserves the insertion order of the keys.
+        // Using a LinkedHashMap preserves the insertion order of the keys.        Map<String, Object> body = new LinkedHashMap<>();
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value()); // e.g., 404
+        body.put("status", HttpStatus.NOT_FOUND.value()); 
         body.put("error", "Not Found");
-        body.put("message", ex.getMessage()); // Get the specific message from the exception
-        body.put("path", request.getDescription(false).replace("uri=", "")); // Get the path where the error occurred
+        body.put("message", ex.getMessage()); 
+        body.put("path", request.getDescription(false).replace("uri=", "")); 
+//pass both longUrl and customAlias(potentially null) to the service            
 
-        // Return the ResponseEntity with the body and the HTTP status.
-        // Spring's Jackson integration will automatically convert the Map to a JSON
-        // string.
+
+
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+//If the service throws AliasAlreadyExistsException, add an error message to the model                }
+//we add a user friendly error message to the model for Thymleaf to display            
+
+    
+    @ExceptionHandler(AliasAlreadyExistsException.class)
+    public ResponseEntity<Object> handleAliasAlreadyExistsException(AliasAlreadyExistsException ex, WebRequest request) {
+        
+        
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value()); 
+        body.put("error", "Conflict"); 
+        body.put("message", ex.getMessage()); 
+        body.put("path", request.getDescription(false).replace("uri=", ""));
+
+        
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
-
-    // --- NEWLY ADDED METHOD END ---
-
 }

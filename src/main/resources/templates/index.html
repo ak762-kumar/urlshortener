@@ -112,6 +112,21 @@
       <input type="text" id="longUrl" name="longUrl" size="50" placeholder="https://example.com/very/long/url" required>
     </div>
     <div>
+            <!-- A label for our new optional input field -->
+            <label for=\"customAlias\">Enter a custom alias (optional):</label>
+        </div>
+        <div>
+            <!--
+              This is the new input field for the custom alias.
+              - name=\"customAlias\": This is CRITICAL. This is the key that our PageController
+                will use to retrieve the value from the form submission.
+              - placeholder: Provides a helpful hint about the format.
+              - Note the LACK of the 'required' attribute. This makes the field optional
+                from the browser's perspective.
+            -->
+            <input type=\"text\" id=\"customAlias\" name=\"customAlias\" size=\"50\" placeholder=\"e.g., my-awesome-event\">
+        </div>
+    <div>
       <!--
               The <input type="submit"> creates a button that, when clicked,
               submits the form data to the server. The 'value' attribute
@@ -236,6 +251,14 @@
 <div class="result" style="background-color: #f8d7da; border-color: #f5c6cb;" th:if="${statsError != null}">
   <p style="color: #721c24;" th:text="${statsError}"></p>
 </div>
+ <!--
+      This block will only be rendered IF the 'aliasError' variable exists in the Model.
+      This happens when our PageController catches an AliasAlreadyExistsException.
+      We style it as an error to give the user clear feedback.
+    -->
+<div class="result" style="background-color: #f8d7da; border-color: #f5c6cb;" th:if="${aliasError != null}">
+        <p style="color: #721c24;" th:text="${aliasError}"></p>
+    </div>
 
 </body>
 
