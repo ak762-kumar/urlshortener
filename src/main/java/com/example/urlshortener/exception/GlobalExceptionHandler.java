@@ -52,6 +52,7 @@ public class GlobalExceptionHandler {
 
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
 //If the service throws AliasAlreadyExistsException, add an error message to the model                }
 //we add a user friendly error message to the model for Thymleaf to display            
 
