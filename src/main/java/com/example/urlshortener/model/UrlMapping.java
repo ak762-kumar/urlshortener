@@ -42,10 +42,8 @@ import jakarta.persistence.Lob;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity // <-- THIS IS THE NEW ANNOTATION
+@Entity
 public class UrlMapping {
-// --- NEWLY ADDED FIELDS START HERE ---
-
     /**
      * The unique identifier for each URL mapping. This will serve as the Primary Key
      * in our database table. A primary key is a special column that uniquely

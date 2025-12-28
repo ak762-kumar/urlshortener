@@ -41,8 +41,10 @@ public class PageController {
         model.addAttribute("originalUrl", longUrl);
 
         try {
-            // UPDATED: Pass both the URL and the (potentially null) alias to the service.
-            String shortCode = urlShortenerService.shortenUrl(longUrl, customAlias);
+            // The web form doesn't support expiration yet, so we explicitly pass 'null'
+            // for the hoursToExpire parameter. The service will see this null and correctly
+            // create a permanent link, preserving the existing behavior of our web page.
+            String shortCode = urlShortenerService.shortenUrl(longUrl, customAlias, null);
             String fullShortUrl = "http://localhost:8080/" + shortCode;
 
             // Add the successful result to the model.

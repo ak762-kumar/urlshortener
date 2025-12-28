@@ -3,6 +3,7 @@
 // principle for building maintainable and scalable applications.
 package com.example.urlshortener.repository;
 
+import java.time.LocalDateTime;
 // NEW: We import Optional, a container object which may or may not contain a non-null value.
 import java.util.Optional;
 
@@ -56,4 +57,19 @@ public interface UrlMappingRepository extends JpaRepository<UrlMapping, Long> {
      * By returning Optional<UrlMapping>, our repository communicates a clear contract: "I will try to find a UrlMapping, but I might not find one, and you need to be prepared for that possibility." This leads to safer, cleaner, and more readable code in our service layer.
      */
     Optional<UrlMapping> findByShortCode(String shortCode);
+
+    /**
+     * Defines a derived delete query for bulk deletion of expired URLs.
+     *
+     * Spring Data JPA will parse this method name and generate the corresponding
+     * JPQL/SQL 'DELETE' statement: "DELETE FROM UrlMapping u WHERE u.expirationDate < :now"
+     *
+     * This is a highly efficient way to perform a bulk delete, as it executes a single
+     * command in the database without fetching the entities into the application's memory first.
+     *
+     * @param now The timestamp to compare against. All URLs with an expirationDate
+     *            before this time will be deleted.
+     * @return The number of entities that were deleted. This is very useful for logging.
+     */
+    long deleteByExpirationDateBefore(LocalDateTime now);
 }
